@@ -8,7 +8,7 @@ import {
   Zap, Sparkles, Star, Plus,
   Search, Target, Activity, Award,
   Edit, Trash2, Brain, Calculator,
-  Sigma, PieChart, AlertCircle, Download
+  AlertCircle
 } from 'lucide-react';
 
 const DashboardPage = () => {
@@ -19,11 +19,47 @@ const DashboardPage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setTimeout(() => {
-      const savedSimulations = getSavedSimulations();
-      setSimulations(savedSimulations || []);
-      setLoading(false);
-    }, 1000);
+    const loadSimulations = () => {
+      try {
+        // Use a small delay for better UX
+        setTimeout(() => {
+          // Check if getSavedSimulations exists and is a function
+          if (getSavedSimulations && typeof getSavedSimulations === 'function') {
+            const savedSimulations = getSavedSimulations();
+            setSimulations(savedSimulations || []);
+          } else {
+            // Fallback: Load from localStorage directly
+            const saved = localStorage.getItem('simulations');
+            if (saved) {
+              setSimulations(JSON.parse(saved));
+            } else {
+              // Default mock data for initial state
+              setSimulations([
+                {
+                  id: '1',
+                  title: 'Spring-Mass Demo',
+                  type: 'spring',
+                  createdAt: new Date().toISOString()
+                },
+                {
+                  id: '2', 
+                  title: 'Pendulum Demo',
+                  type: 'pendulum',
+                  createdAt: new Date(Date.now() - 86400000).toISOString()
+                }
+              ]);
+            }
+          }
+          setLoading(false);
+        }, 500);
+      } catch (error) {
+        console.error('Error loading simulations:', error);
+        setSimulations([]);
+        setLoading(false);
+      }
+    };
+
+    loadSimulations();
   }, [getSavedSimulations]);
 
   const stats = [
@@ -77,22 +113,22 @@ const DashboardPage = () => {
       description: 'Energy distribution analysis',
       icon: <BarChart3 className="w-6 h-6" />,
       gradient: 'from-orange-500 to-amber-500',
-      link: '/simulation'
+      link: '/graphs'
     },
     {
-      title: 'My Simulations',
-      description: 'View saved simulations',
+      title: 'Take Quiz',
+      description: 'Test your physics knowledge',
       icon: <Brain className="w-6 h-6" />,
       gradient: 'from-blue-500 to-indigo-500',
-      link: '#recent'
+      link: '/quiz'
     }
   ];
 
   const achievements = [
-    { title: 'First Simulation', progress: 100, color: 'from-pink-500 to-purple-500' },
-    { title: 'Energy Expert', progress: 75, color: 'from-emerald-500 to-cyan-500' },
-    { title: 'Physics Pro', progress: 50, color: 'from-orange-500 to-amber-500' },
-    { title: 'Data Analyst', progress: 25, color: 'from-blue-500 to-indigo-500' },
+    { title: 'First Simulation', progress: simulations.length > 0 ? 100 : 0, color: 'from-pink-500 to-purple-500', icon: '🎯' },
+    { title: 'Energy Expert', progress: 75, color: 'from-emerald-500 to-cyan-500', icon: '⚡' },
+    { title: 'Physics Pro', progress: 50, color: 'from-orange-500 to-amber-500', icon: '🧠' },
+    { title: 'Data Analyst', progress: 25, color: 'from-blue-500 to-indigo-500', icon: '📊' },
   ];
 
   const recentActivity = [
@@ -108,6 +144,14 @@ const DashboardPage = () => {
     const matchesFilter = filter === 'all' || sim.type === filter;
     return matchesSearch && matchesFilter;
   });
+
+  // Handle simulation deletion
+  const handleDeleteSimulation = (id) => {
+    setSimulations(prev => prev.filter(sim => sim.id !== id));
+    // Update localStorage
+    const updated = simulations.filter(sim => sim.id !== id);
+    localStorage.setItem('simulations', JSON.stringify(updated));
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 p-4 md:p-8">
@@ -226,7 +270,7 @@ const DashboardPage = () => {
                 <div>
                   <h2 className="text-xl font-bold text-gray-800 mb-2 font-display">Recent Simulations</h2>
                   <p className="text-gray-600 text-sm">
-                    {simulations.length} simulations in your library
+                    {simulations.length} simulation{simulations.length !== 1 ? 's' : ''} in your library
                   </p>
                 </div>
                 
@@ -310,10 +354,15 @@ const DashboardPage = () => {
                           </div>
                         </div>
                         <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button className="p-2 hover:bg-pink-50 rounded-lg transition-colors">
-                            <Edit size={18} className="text-gray-600" />
-                          </button>
-                          <button className="p-2 hover:bg-red-50 rounded-lg transition-colors">
+                          <Link to={`/simulation?type=${sim.type}&load=${sim.id}`}>
+                            <button className="p-2 hover:bg-pink-50 rounded-lg transition-colors">
+                              <Edit size={18} className="text-gray-600" />
+                            </button>
+                          </Link>
+                          <button 
+                            onClick={() => handleDeleteSimulation(sim.id)}
+                            className="p-2 hover:bg-red-50 rounded-lg transition-colors"
+                          >
                             <Trash2 size={18} className="text-red-500" />
                           </button>
                         </div>
@@ -347,7 +396,9 @@ const DashboardPage = () => {
                   <div key={index} className="space-y-2">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <span className="text-2xl">{achievement.icon}</span>
+                        <div className="w-8 h-8 rounded-lg bg-pink-100 flex items-center justify-center">
+                          <span className="text-lg">{achievement.icon}</span>
+                        </div>
                         <span className="text-gray-800 text-sm font-medium">{achievement.title}</span>
                       </div>
                       <span className="text-gray-600 text-sm">{achievement.progress}%</span>
