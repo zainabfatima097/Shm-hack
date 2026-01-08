@@ -1,4 +1,3 @@
-// components/layout/Sidebar.jsx
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -19,21 +18,20 @@ import {
   ChevronLeft,
   ChevronRight,
   Brain,
-  Home,
   Trophy,
-  FileText,
   FolderOpen,
-  BarChart
+  Gamepad2  // Added gamepad icon
 } from 'lucide-react';
 
 const Sidebar = () => {
   const { user, logout } = useAuth();
-  const [isOpen, setIsOpen] = useState(false); // Start collapsed by default
+  const [isOpen, setIsOpen] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   const navItems = [
     { path: '/dashboard', label: 'Dashboard', icon: <LayoutDashboard size={22} /> },
     { path: '/simulation', label: 'Simulation', icon: <Cpu size={22} /> },
+    { path: '/games', label: 'Games', icon: <Gamepad2 size={22} /> },  
     { path: '/graphs', label: 'Graphs', icon: <BarChart3 size={22} /> },
     { path: '/saved-simulations', label: 'My Simulations', icon: <FolderOpen size={22} /> },
     { path: '/calculations', label: 'Calculations', icon: <Calculator size={22} /> },
@@ -75,7 +73,7 @@ const Sidebar = () => {
         initial={{ x: -64 }}
         animate={{ 
           x: isMobileOpen ? 0 : (!isOpen ? -64 : 0),
-          width: isOpen ? 240 : 64 // Reduced width from 280/80 to 240/64
+          width: isOpen ? 240 : 64
         }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
         className="fixed left-0 top-0 h-screen z-40 hidden lg:block bg-gradient-to-b from-white/95 to-pink-50/95 backdrop-blur-xl border-r border-pink-200 shadow-lg"
@@ -154,8 +152,8 @@ const Sidebar = () => {
             </div>
           )}
 
-          {/* Main Navigation */}
-          <nav className="flex-1 p-2">
+          {/* Main Navigation with themed scrollbar */}
+          <nav className="flex-1 p-2 overflow-y-auto">
             <ul className="space-y-1">
               {navItems.map((item) => (
                 <li key={item.path}>
@@ -186,8 +184,8 @@ const Sidebar = () => {
             </ul>
           </nav>
 
-          {/* Footer - Logout only */}
-          <div className="p-4 border-t border-pink-200">
+          {/* Footer with Logout - Fixed to bottom */}
+          <div className="p-4 border-t border-pink-200 mt-auto">
             <button
               onClick={logout}
               className={`w-full flex items-center gap-3 p-3 rounded-xl text-red-500 hover:text-red-600 hover:bg-red-50 transition-colors ${
@@ -209,7 +207,7 @@ const Sidebar = () => {
         </div>
       </motion.aside>
 
-      {/* Mobile Sidebar */}
+      {/* Mobile Sidebar with themed scrollbar */}
       <AnimatePresence>
         {isMobileOpen && (
           <motion.aside
@@ -260,8 +258,8 @@ const Sidebar = () => {
               </div>
             )}
 
-            {/* Navigation */}
-            <nav className="flex-1 p-4">
+            {/* Navigation with themed scrollbar */}
+            <nav className="flex-1 p-4 overflow-y-auto">
               <ul className="space-y-1">
                 {navItems.map((item) => (
                   <li key={item.path}>
@@ -284,7 +282,8 @@ const Sidebar = () => {
               </ul>
             </nav>
 
-            <div className="p-4 border-t border-pink-200">
+            {/* Fixed Logout at bottom */}
+            <div className="p-4 border-t border-pink-200 mt-auto">
               <button
                 onClick={() => {
                   logout();
@@ -304,19 +303,54 @@ const Sidebar = () => {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="hidden lg:block fixed left-2 top-1/2 transform -translate-y-1/2 z-30 p-1.5 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-xl hover:shadow-2xl hover:shadow-pink-300/50 transition-shadow"
+          className="hidden lg:block fixed left-2 top-1/2 transform -translate-y-1/2 z-30 p-2 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-xl hover:shadow-2xl hover:shadow-pink-300/50 transition-shadow"
         >
           <ChevronRight size={30} />
         </button>
       )}
 
-      {/* Main content margin adjustment based on sidebar state */}
+      {/* Custom scrollbar styles */}
       <style jsx>{`
         @media (min-width: 1024px) {
           body {
             transition: padding-left 0.3s ease;
-            padding-left: ${isOpen ? '240px' : '64px'};
+            padding-left: ${isOpen ? '240px' : '2px'};
           }
+        }
+
+        /* Custom scrollbar styling */
+        .overflow-y-auto::-webkit-scrollbar {
+          width: 6px;
+        }
+
+        .overflow-y-auto::-webkit-scrollbar-track {
+          background: rgba(249, 168, 212, 0.1);
+          border-radius: 10px;
+        }
+
+        .overflow-y-auto::-webkit-scrollbar-thumb {
+          background: linear-gradient(to bottom, rgba(236, 72, 153, 0.3), rgba(139, 92, 246, 0.3));
+          border-radius: 10px;
+          border: 1px solid rgba(236, 72, 153, 0.2);
+        }
+
+        .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+          background: linear-gradient(to bottom, rgba(236, 72, 153, 0.5), rgba(139, 92, 246, 0.5));
+        }
+
+        /* For Firefox */
+        .overflow-y-auto {
+          scrollbar-width: thin;
+          scrollbar-color: rgba(236, 72, 153, 0.3) rgba(249, 168, 212, 0.1);
+        }
+
+        /* Hide scrollbar when sidebar is collapsed */
+        .fixed.left-0.top-0.h-screen.z-40.hidden.lg\\:block:not([style*="width: 240px"]) .overflow-y-auto::-webkit-scrollbar {
+          display: none;
+        }
+        
+        .fixed.left-0.top-0.h-screen.z-40.hidden.lg\\:block:not([style*="width: 240px"]) .overflow-y-auto {
+          scrollbar-width: none;
         }
       `}</style>
     </>
