@@ -1,27 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Gamepad2, Zap, Target, Brain, Trophy, ArrowRight, Users, Clock, Sparkles, Play, Star } from 'lucide-react';
 import TypingIntro from '../components/game/TypingIntro';
 
 const GamesPage = () => {
-  const navigate = useNavigate();
   const [showIntro, setShowIntro] = useState(true);
-  const [showGames, setShowGames] = useState(false);
 
   // Check if user has seen intro before
   useEffect(() => {
     const hasSeenIntro = localStorage.getItem('physicsGamesIntroSeen');
     if (hasSeenIntro) {
       setShowIntro(false);
-      setShowGames(true);
     }
   }, []);
 
   const handleIntroComplete = () => {
     localStorage.setItem('physicsGamesIntroSeen', 'true');
     setShowIntro(false);
-    setShowGames(true);
   };
 
   const games = [

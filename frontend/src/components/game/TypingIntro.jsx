@@ -1,6 +1,18 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
+
+// Move sentences outside component to prevent recreation on every render
+const SENTENCES = [
+  "GALILEO GALILEI STUDIED THE SIMPLE PENDULUM.",
+  "HE DISCOVERED SWING TIME DEPENDS ON LENGTH.",
+  "CHRISTIAAN HUYGENS BUILT THE PENDULUM CLOCK.",
+  "THIS INVENTION REVOLUTIONIZED TIMEKEEPING.",
+  "ROBERT HOOKE CREATED HOOKE'S LAW FOR SPRINGS.",
+  "HE CONNECTED SPRING MOTION TO PENDULUMS.",
+  "TOGETHER, THEY FOUNDED HARMONIC MOTION.",
+  "NOW, EXPERIENCE PHYSICS THROUGH GAMES!"
+];
 
 // Keyboard sound effect
 const createKeyboardSound = (type = 'keypress') => {
@@ -61,21 +73,12 @@ const TypingIntro = ({ onComplete }) => {
   const [currentSentence, setCurrentSentence] = useState(0);
   const [currentText, setCurrentText] = useState('');
   const [isTyping, setIsTyping] = useState(true);
-  const [isDeleting, setIsDeleting] = useState(false);
   const [showCursor, setShowCursor] = useState(true);
   const [phase, setPhase] = useState('typing'); // 'typing', 'pausing', 'deleting'
   const cursorRef = useRef(null);
 
-  const sentences = [
-    "GALILEO GALILEI STUDIED THE SIMPLE PENDULUM.",
-    "HE DISCOVERED SWING TIME DEPENDS ON LENGTH.",
-    "CHRISTIAAN HUYGENS BUILT THE PENDULUM CLOCK.",
-    "THIS INVENTION REVOLUTIONIZED TIMEKEEPING.",
-    "ROBERT HOOKE CREATED HOOKE'S LAW FOR SPRINGS.",
-    "HE CONNECTED SPRING MOTION TO PENDULUMS.",
-    "TOGETHER, THEY FOUNDED HARMONIC MOTION.",
-    "NOW, EXPERIENCE PHYSICS THROUGH GAMES!"
-  ];
+  // Use useMemo to prevent sentences from changing on every render
+  const sentences = useMemo(() => SENTENCES, []);
 
   useEffect(() => {
     // Cursor blink effect

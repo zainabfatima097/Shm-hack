@@ -1,7 +1,7 @@
 // components/simulation/SaveSimulationModal.jsx
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Save, Tag, FileText, User, Globe, Clock } from 'lucide-react';
+import { X, Save, Tag, FileText, Clock } from 'lucide-react';
 
 const SaveSimulationModal = ({ isOpen, onClose, onSave }) => {
   const [title, setTitle] = useState('');

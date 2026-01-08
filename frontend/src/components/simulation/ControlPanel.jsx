@@ -2,7 +2,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useSimulationContext } from '../../contexts/SimulationContext';
-import { Play, Pause, RotateCcw, Cpu, Target, Zap, Settings, Clock, Wind } from 'lucide-react';
+import { Play, Pause, RotateCcw, Cpu, Target, Zap, Settings, Clock } from 'lucide-react';
 
 const ControlPanel = () => {
   const {

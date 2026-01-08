@@ -1,10 +1,9 @@
 // components/simulation/SavedSimulationsList.jsx
 import React, { useState, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { 
   FolderOpen, Trash2, Clock, Target, Zap, X, 
-  Download, Upload, Edit, Play, Search, Filter,
-  Calendar, FileText, Hash, BarChart3, Copy
+  Download, Upload, Edit, Play, Search, FileText, Hash, BarChart3, Copy
 } from 'lucide-react';
 
 const SavedSimulationsList = ({ 

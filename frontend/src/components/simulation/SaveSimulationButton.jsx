@@ -1,7 +1,7 @@
 // components/simulation/SaveSimulationButton.jsx
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Save, FolderOpen, Bookmark, Upload, Cloud, Lock } from 'lucide-react';
+import { Save, FolderOpen, Bookmark, Cloud, Lock } from 'lucide-react';
 
 const SaveSimulationButton = ({ 
   onQuickSave, 

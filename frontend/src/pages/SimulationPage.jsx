@@ -1,4 +1,3 @@
-// pages/SimulationPage.jsx
 import React, { useState, useCallback, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { SimulationProvider } from '../contexts/SimulationContext';
@@ -18,6 +17,17 @@ const SimulationPageContent = () => {
   const [showSavedList, setShowSavedList] = useState(false);
   const [saveStatus, setSaveStatus] = useState(null);
   const [savedSimulations, setSavedSimulations] = useState([]);
+
+  // Helper function to get simulations from localStorage - MOVED TO TOP
+  const getSavedSimulations = useCallback(() => {
+    try {
+      const saved = localStorage.getItem('simulations');
+      return saved ? JSON.parse(saved) : [];
+    } catch (error) {
+      console.error('Error getting simulations:', error);
+      return [];
+    }
+  }, []);
 
   // Load saved simulations with fallback
   useEffect(() => {
@@ -44,21 +54,10 @@ const SimulationPageContent = () => {
     };
 
     loadSimulations();
-  }, []);
-
-  // Helper function to get simulations from localStorage
-  const getSavedSimulations = () => {
-    try {
-      const saved = localStorage.getItem('simulations');
-      return saved ? JSON.parse(saved) : [];
-    } catch (error) {
-      console.error('Error getting simulations:', error);
-      return [];
-    }
-  };
+  }, [getSavedSimulations]); // Add getSavedSimulations to dependencies
 
   // Helper function to save to localStorage
-  const saveToLocalStorage = (simulation) => {
+  const saveToLocalStorage = useCallback((simulation) => {
     try {
       const simulations = getSavedSimulations();
       const newSimulation = {
@@ -77,7 +76,7 @@ const SimulationPageContent = () => {
       console.error('Error saving to localStorage:', error);
       return { success: false, error: error.message };
     }
-  };
+  }, [getSavedSimulations, user?.id]);
 
   // Handle save simulation
   const handleSaveSimulation = useCallback(async (title, description) => {
@@ -128,7 +127,7 @@ const SimulationPageContent = () => {
       });
       return false;
     }
-  }, [saveSimulation, user]);
+  }, [saveSimulation, saveToLocalStorage, user, getSavedSimulations]);
 
   // Quick save function
   const handleQuickSave = useCallback(() => {

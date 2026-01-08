@@ -1,12 +1,11 @@
-// pages/TutorialsPage.jsx
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
   BookOpen, GraduationCap, Target, Zap, 
-  Clock, Calculator, BarChart3, Download,
-  Play, Pause, Settings, ChevronRight,
-  AlertCircle, Lightbulb, FileText, Video,
-  Eye, Brain, TrendingUp, Shield
+  Calculator, BarChart3, Download,
+  Play, ChevronRight,
+  AlertCircle, Lightbulb, Eye, 
+  TrendingUp, Shield
 } from 'lucide-react';
 
 const TutorialsPage = () => {

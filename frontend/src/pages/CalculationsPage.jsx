@@ -1,7 +1,7 @@
 // pages/CalculationsPage.jsx
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Calculator, Hash, Sigma, Zap, Target, Cpu, Download, Copy, Brain, PieChart, AlertCircle } from 'lucide-react';
+import { Calculator, Hash, Sigma, Zap, Target, Download, Copy, Brain, AlertCircle } from 'lucide-react';
 
 const CalculationsPage = () => {
   const [activeTab, setActiveTab] = useState('shm');

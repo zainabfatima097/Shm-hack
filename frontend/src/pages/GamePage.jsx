@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import TypingIntro from '../components/game/TypingIntro';
 import GameCanvas from '../components/game/GameCanvas';
 import ParticleBackground from '../components/ui/ParticleBackground'; 
-import { Zap, Target, Brain, Trophy, Play } from 'lucide-react';
+import { Brain } from 'lucide-react';
 
 const GamePage = () => {
   const [currentScreen, setCurrentScreen] = useState('intro');

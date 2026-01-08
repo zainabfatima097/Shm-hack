@@ -8,7 +8,6 @@ import {
   Zap, Sparkles, Star, Plus,
   Search, Target, Activity, Award,
   Edit, Trash2, Brain, Calculator,
-  AlertCircle
 } from 'lucide-react';
 
 const DashboardPage = () => {

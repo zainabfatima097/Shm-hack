@@ -35,14 +35,6 @@ const ParticleBackground = ({ variant = 'default' }) => {
     };
 
     const particleColors = colorSchemes[variant] || colorSchemes.default;
-    
-    // Background gradients based on variant
-    const backgroundGradients = {
-      default: 'radial-gradient(ellipse at center, rgba(251, 207, 232, 0.1) 0%, rgba(245, 243, 255, 0.05) 50%, transparent 100%)',
-      quiz: 'radial-gradient(ellipse at center, rgba(236, 72, 153, 0.08) 0%, rgba(139, 92, 246, 0.05) 50%, transparent 100%)',
-      dashboard: 'radial-gradient(ellipse at center, rgba(236, 72, 153, 0.06) 0%, rgba(245, 243, 255, 0.03) 50%, transparent 100%)'
-    };
-
     // Set canvas size
     const resizeCanvas = () => {
       canvas.width = window.innerWidth;

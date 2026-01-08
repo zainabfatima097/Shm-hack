@@ -1,15 +1,14 @@
 // pages/QuizPage.jsx
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { 
   Trophy, CheckCircle, XCircle, 
   Zap, Target, Clock, TrendingUp,
-  Brain, Award, Star, Plus,
+  Brain, Award, Star,
   Search, Activity, Sparkles, 
   ChevronRight, ChevronLeft, RefreshCw,
-  BarChart3, Calculator, Hash, AlertCircle,
-  Cpu, Edit, Trash2, Download
+  BarChart3, Calculator, Hash,
+  Cpu
 } from 'lucide-react';
 
 const QuizPage = () => {
@@ -23,7 +22,6 @@ const QuizPage = () => {
   const [answerHistory, setAnswerHistory] = useState([]);
   const [quizMode, setQuizMode] = useState('practice');
   const [searchTerm, setSearchTerm] = useState('');
-  const [filter, setFilter] = useState('all');
 
   const physicsQuizzes = {
     basics: {

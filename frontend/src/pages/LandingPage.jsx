@@ -2,7 +2,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Cpu, BarChart3, Zap, Shield, Globe, Users, Rocket, Sparkles, Brain, Target, Activity, Award, Calculator, Sigma, PieChart } from 'lucide-react';
+import { Cpu, BarChart3, Zap, Rocket, Sparkles, Brain, Target, Award, Calculator } from 'lucide-react';
 import ParticleBackground from '../components/ui/ParticleBackground';
 
 const LandingPage = () => {

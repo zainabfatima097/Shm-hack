@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Play, Pause, RotateCcw, Target, Zap, TrendingUp, Clock, Trophy, Users, Award } from 'lucide-react';
+import { Play, Pause, RotateCcw, Target, Zap, TrendingUp, Clock, Trophy, Award } from 'lucide-react';
 
 const GameCanvas = ({ onComplete, onSkip }) => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -9,7 +9,9 @@ const GameCanvas = ({ onComplete, onSkip }) => {
   const [pendulumAngle, setPendulumAngle] = useState(30);
   const [targetsHit, setTargetsHit] = useState(0);
   const [accuracy, setAccuracy] = useState(85);
-  const canvasRef = useRef(null);
+  
+  // Remove unused canvasRef
+  // const canvasRef = useRef(null);
 
   useEffect(() => {
     const interval = setInterval(() => {

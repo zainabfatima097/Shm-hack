@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
-import { Mail, Lock, User, Eye, EyeOff, Cpu, Check, Chrome, Sparkles, Brain } from 'lucide-react';
+import { Mail, Lock, User, Eye, EyeOff, Check, Chrome, Sparkles, Brain } from 'lucide-react';
 import ParticleBackground from '../components/ui/ParticleBackground';
 
 const SignupPage = () => {

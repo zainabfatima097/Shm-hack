@@ -1,7 +1,7 @@
 // components/simulation/EquationDisplay.jsx
 import React from 'react';
 import { useSimulationContext } from '../../contexts/SimulationContext';
-import { Sigma, Calculator, Hash, PieChart, Zap, Target, Clock, Cpu } from 'lucide-react';
+import { Sigma, Hash, PieChart, Zap, Target, Clock, Cpu } from 'lucide-react';
 
 const EquationDisplay = () => {
   const { simulationType, parameters } = useSimulationContext();
