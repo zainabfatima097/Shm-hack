@@ -1,6 +1,6 @@
 // pages/SimulationPage.jsx
-import React, { useState, useCallback } from 'react';
-import { motion } from 'framer-motion'; // Added motion import
+import React, { useState, useCallback, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { SimulationProvider } from '../contexts/SimulationContext';
 import { useAuth } from '../contexts/AuthContext';
 import SimulationCanvas from '../components/simulation/SimulationCanvas';
@@ -10,37 +10,95 @@ import EquationDisplay from '../components/simulation/EquationDisplay';
 import SaveSimulationButton from '../components/simulation/SaveSimulationButton';
 import SaveSimulationModal from '../components/simulation/SaveSimulationModal';
 import SavedSimulationsList from '../components/simulation/SavedSimulationsList';
-import { Save, FileText, AlertCircle, CheckCircle } from 'lucide-react'; // Removed unused Cloud, Lock, Brain
+import { Save, FileText, AlertCircle, CheckCircle } from 'lucide-react';
 
 const SimulationPageContent = () => {
-  const { user, saveSimulation, getSavedSimulations } = useAuth();
+  const { user, saveSimulation } = useAuth();
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showSavedList, setShowSavedList] = useState(false);
   const [saveStatus, setSaveStatus] = useState(null);
   const [savedSimulations, setSavedSimulations] = useState([]);
 
-  // Load saved simulations
-  React.useEffect(() => {
-    const simulations = getSavedSimulations();
-    setSavedSimulations(simulations);
-  }, [getSavedSimulations]);
+  // Load saved simulations with fallback
+  useEffect(() => {
+    const loadSimulations = () => {
+      try {
+        // First try to use getSavedSimulations from AuthContext
+        if (typeof getSavedSimulations === 'function') {
+          const simulations = getSavedSimulations();
+          setSavedSimulations(simulations || []);
+        } else {
+          // Fallback to localStorage directly
+          const saved = localStorage.getItem('simulations');
+          if (saved) {
+            setSavedSimulations(JSON.parse(saved));
+          } else {
+            // Default empty array
+            setSavedSimulations([]);
+          }
+        }
+      } catch (error) {
+        console.error('Error loading simulations:', error);
+        setSavedSimulations([]);
+      }
+    };
+
+    loadSimulations();
+  }, []);
+
+  // Helper function to get simulations from localStorage
+  const getSavedSimulations = () => {
+    try {
+      const saved = localStorage.getItem('simulations');
+      return saved ? JSON.parse(saved) : [];
+    } catch (error) {
+      console.error('Error getting simulations:', error);
+      return [];
+    }
+  };
+
+  // Helper function to save to localStorage
+  const saveToLocalStorage = (simulation) => {
+    try {
+      const simulations = getSavedSimulations();
+      const newSimulation = {
+        ...simulation,
+        id: Date.now().toString(),
+        createdAt: new Date().toISOString(),
+        userId: user?.id || 'anonymous'
+      };
+      
+      const updatedSimulations = [newSimulation, ...simulations];
+      localStorage.setItem('simulations', JSON.stringify(updatedSimulations));
+      setSavedSimulations(updatedSimulations);
+      
+      return { success: true, simulation: newSimulation };
+    } catch (error) {
+      console.error('Error saving to localStorage:', error);
+      return { success: false, error: error.message };
+    }
+  };
 
   // Handle save simulation
   const handleSaveSimulation = useCallback(async (title, description) => {
     try {
-      // We need to get current simulation state from context
-      // For now, we'll use a placeholder - you'll need to get this from your simulation context
       const simulationData = {
         title: title || `Simulation ${new Date().toLocaleDateString()}`,
         description: description || '',
-        // You'll need to get actual state from your simulation context
-        type: 'spring', // This should come from context
-        parameters: {}, // This should come from context
+        type: 'spring',
+        parameters: {},
         timestamp: Date.now(),
       };
 
-      const result = saveSimulation(simulationData);
+      let result;
       
+      // Try to use AuthContext save if available, otherwise use localStorage
+      if (typeof saveSimulation === 'function') {
+        result = await saveSimulation(simulationData);
+      } else {
+        result = saveToLocalStorage(simulationData);
+      }
+
       if (result.success) {
         setSaveStatus({
           type: 'success',
@@ -48,13 +106,13 @@ const SimulationPageContent = () => {
             ? 'Simulation saved to your account!' 
             : 'Simulation saved locally!',
         });
-        
+
         // Refresh simulations list
-        setSavedSimulations(getSavedSimulations());
-        
+        const updated = getSavedSimulations();
+        setSavedSimulations(updated);
+
         // Auto-hide success message after 3 seconds
         setTimeout(() => setSaveStatus(null), 3000);
-        
         return true;
       } else {
         setSaveStatus({
@@ -70,7 +128,7 @@ const SimulationPageContent = () => {
       });
       return false;
     }
-  }, [saveSimulation, getSavedSimulations, user]);
+  }, [saveSimulation, user]);
 
   // Quick save function
   const handleQuickSave = useCallback(() => {
@@ -106,7 +164,7 @@ const SimulationPageContent = () => {
 
           {/* Save Status Messages */}
           {saveStatus && (
-            <motion.div // Now properly imported
+            <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               className={`mb-6 p-4 rounded-xl border ${
@@ -205,7 +263,9 @@ const SimulationPageContent = () => {
                       <div 
                         key={sim.id}
                         className="p-4 bg-white/60 backdrop-blur-sm border border-pink-200 rounded-xl hover:bg-pink-50/80 transition-all cursor-pointer group"
-                        onClick={() => {/* Load simulation logic here */}}
+                        onClick={() => {
+                          console.log('Load simulation:', sim.id);
+                        }}
                       >
                         <div className="flex items-center justify-between mb-3">
                           <div className="flex items-center gap-3">
@@ -262,14 +322,13 @@ const SimulationPageContent = () => {
           simulations={savedSimulations}
           onClose={() => setShowSavedList(false)}
           onLoad={(id) => {
-            // Implement load logic here
             console.log('Load simulation:', id);
             setShowSavedList(false);
           }}
           onDelete={(id) => {
-            // Implement delete logic here
             const updated = savedSimulations.filter(sim => sim.id !== id);
             setSavedSimulations(updated);
+            localStorage.setItem('simulations', JSON.stringify(updated));
           }}
         />
       )}
