@@ -46,30 +46,30 @@ const LandingPage = () => {
   ];
 
   const stats = [
-    { value: '10K+', label: 'Active Students', color: 'text-pink-500' },
+    { value: '10+', label: 'Live Simulations', color: 'text-pink-500' },
     { value: '98%', label: 'Success Rate', color: 'text-emerald-500' },
-    { value: '50K+', label: 'Simulations', color: 'text-amber-500' },
+    { value: '100%', label: 'fun', color: 'text-amber-500' },
     { value: '24/7', label: 'Availability', color: 'text-blue-500' },
   ];
 
   const testimonials = [
     {
-      quote: "This platform transformed how I teach SHM. The visualizations are incredible!",
-      author: "Dr. Sarah Chen",
-      role: "Physics Professor",
-      color: 'from-pink-500 to-purple-500'
-    },
-    {
-      quote: "Finally, a tool that makes harmonic motion intuitive and engaging.",
-      author: "Alex Johnson",
-      role: "Engineering Student",
+      quote: "This platform is designed for students who struggle with practicals. Like Me!",
+      author: "Zara Adeen Khadeer",
+      role: "Web Designer",
       color: 'from-emerald-500 to-cyan-500'
     },
     {
-      quote: "The analytics dashboard helped me understand concepts I struggled with for months.",
-      author: "Maria Rodriguez",
-      role: "High School Teacher",
-      color: 'from-amber-500 to-orange-500'
+      quote: "Finally, a tool that makes harmonic motion intuitive and engaging.",
+      author: "Zainab Fatima",
+      role: "Web Developer",
+      color: 'from-emerald-500 to-cyan-500'
+    },
+    {
+      quote: "It's your turn to use Harmonic Lab and drop a testimonial",
+      author: "Next Who?",
+      role: "Next You.",
+      color: 'from-emerald-500 to-cyan-500'
     }
   ];
 
@@ -349,5 +349,6 @@ const LandingPage = () => {
     </div>
   );
 };
+
 
 export default LandingPage;
