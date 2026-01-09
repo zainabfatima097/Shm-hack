@@ -15,7 +15,7 @@ Students often struggle with SHM because:
 
 ---
 
-## 💡 Solution
+## Solution
 
 **Simple Harmonic Lab** replicates and enhances the physics lab experience digitally.
 
@@ -30,7 +30,7 @@ It:
 
 ---
 
-## ✨ Features
+## Features
 
 - Spring–Mass & Pendulum simulations  
 - Real-time parameter control (mass, length, spring constant, damping, gravity)
@@ -42,7 +42,7 @@ It:
 
 ---
 
-## 🧠 Learning Outcome
+## Learning Outcome
 
 Turns SHM from abstract formulas into a **visual, interactive experience** that improves:
 - Conceptual clarity
@@ -52,7 +52,7 @@ Turns SHM from abstract formulas into a **visual, interactive experience** that 
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 ### Frontend
 - React 18
@@ -75,7 +75,7 @@ Turns SHM from abstract formulas into a **visual, interactive experience** that 
 
 ---
 
-## 🎯 Target Audience
+## Target Audience
 
 **Students**
 - Intermediate / High School
@@ -89,7 +89,7 @@ Turns SHM from abstract formulas into a **visual, interactive experience** that 
 
 ---
 
-## 📊 Effectiveness Comparison
+## Effectiveness Comparison
 
 Simulation labs outperform traditional labs in:
 - Time required
@@ -100,7 +100,7 @@ Simulation labs outperform traditional labs in:
 
 ---
 
-## 🚀 Future Scope
+## Future Scope
 
 - Save & revisit simulations
 - Performance analytics
@@ -109,6 +109,6 @@ Simulation labs outperform traditional labs in:
 
 ---
 
-## 📌 Conclusion
+## Conclusion
 
 Simple Harmonic Lab modernizes physics education by making experiments **faster, clearer, and accessible anytime, anywhere**.
