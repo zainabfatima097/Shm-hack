@@ -1,351 +1,592 @@
 // pages/LandingPage.jsx
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { Cpu, BarChart3, Zap, Rocket, Sparkles, Brain, Target, Award, Calculator } from 'lucide-react';
-import ParticleBackground from '../components/ui/ParticleBackground';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { motion} from 'framer-motion';
+import { useAuth } from '../contexts/AuthContext';
+import { 
+  Zap, Target, Brain, BarChart3, Calculator, Users, Rocket, 
+  Sparkles, Star, TrendingUp,
+  Play, ArrowRight, ChevronRight,
+  Cpu, Clock, TargetIcon
+} from 'lucide-react';
 
 const LandingPage = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [activeFeature, setActiveFeature] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveFeature((prev) => (prev + 1) % 4);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
+
   const features = [
     {
-      icon: <Cpu className="w-8 h-8" />,
-      title: 'Real-time Simulation',
-      description: 'Interactive SHM simulation with live physics calculations',
-      gradient: 'from-pink-500 to-purple-500'
-    },
-    {
-      icon: <BarChart3 className="w-8 h-8" />,
-      title: 'Advanced Analytics',
-      description: 'Dynamic graphs showing displacement, velocity, and energy',
-      gradient: 'from-emerald-500 to-cyan-500'
-    },
-    {
       icon: <Zap className="w-8 h-8" />,
-      title: 'Instant Calculations',
-      description: 'Real-time physics calculations with detailed formulas',
-      gradient: 'from-amber-500 to-orange-500'
+      title: "Real-time Simulations",
+      description: "Interactive physics simulations with live parameter adjustments",
+      color: "from-pink-500 to-purple-500",
+      stats: "60 FPS rendering"
     },
     {
       icon: <Brain className="w-8 h-8" />,
-      title: 'Interactive Quizzes',
-      description: 'Test your knowledge with challenging SHM questions',
-      gradient: 'from-blue-500 to-indigo-500'
+      title: "AI-Powered Analysis",
+      description: "Smart insights and predictions based on your simulation data",
+      color: "from-emerald-500 to-cyan-500",
+      stats: "95% accuracy"
+    },
+    {
+      icon: <BarChart3 className="w-8 h-8" />,
+      title: "Advanced Visualization",
+      description: "Interactive graphs and 3D visualizations of harmonic motion",
+      color: "from-orange-500 to-amber-500",
+      stats: "10+ graph types"
     },
     {
       icon: <Calculator className="w-8 h-8" />,
-      title: 'Physics Formulas',
-      description: 'Comprehensive formula library with derivations',
-      gradient: 'from-purple-500 to-pink-500'
-    },
-    {
-      icon: <Target className="w-8 h-8" />,
-      title: 'Progress Tracking',
-      description: 'Monitor your learning journey with detailed analytics',
-      gradient: 'from-cyan-500 to-blue-500'
+      title: "Physics Calculator",
+      description: "Built-in calculator for complex physics equations",
+      color: "from-blue-500 to-indigo-500",
+      stats: "100+ formulas"
     }
-  ];
-
-  const stats = [
-    { value: '10K+', label: 'Active Students', color: 'text-pink-500' },
-    { value: '98%', label: 'Success Rate', color: 'text-emerald-500' },
-    { value: '50K+', label: 'Simulations', color: 'text-amber-500' },
-    { value: '24/7', label: 'Availability', color: 'text-blue-500' },
   ];
 
   const testimonials = [
     {
-      quote: "This platform transformed how I teach SHM. The visualizations are incredible!",
-      author: "Dr. Sarah Chen",
-      role: "Physics Professor",
-      color: 'from-pink-500 to-purple-500'
+      name: "Dr. Sarah Chen",
+      role: "Physics Professor, MIT",
+      content: "This platform revolutionized how I teach harmonic motion. The simulations are incredibly accurate.",
+      avatar: "👩‍🏫",
+      rating: 5
     },
     {
-      quote: "Finally, a tool that makes harmonic motion intuitive and engaging.",
-      author: "Alex Johnson",
+      name: "Alex Rodriguez",
       role: "Engineering Student",
-      color: 'from-emerald-500 to-cyan-500'
+      content: "Finally, a tool that makes physics intuitive! The interactive graphs helped me ace my exams.",
+      avatar: "👨‍🎓",
+      rating: 5
     },
     {
-      quote: "The analytics dashboard helped me understand concepts I struggled with for months.",
-      author: "Maria Rodriguez",
+      name: "Priya Sharma",
       role: "High School Teacher",
-      color: 'from-amber-500 to-orange-500'
+      content: "My students are engaged like never before. The gamified learning approach works wonders.",
+      avatar: "👩‍🏫",
+      rating: 5
     }
   ];
 
-  return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* Background with ParticleBackground component */}
-      <ParticleBackground variant="default" />
-      
-      {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-pink-50/20 via-purple-50/10 to-blue-50/10" />
+  const stats = [
+    { value: "10K+", label: "Active Users", icon: <Users className="w-6 h-6" /> },
+    { value: "50K+", label: "Simulations Created", icon: <Cpu className="w-6 h-6" /> },
+    { value: "95%", label: "Accuracy Rate", icon: <TargetIcon className="w-6 h-6" /> },
+    { value: "24/7", label: "Uptime", icon: <Clock className="w-6 h-6" /> }
+  ];
 
-      {/* Main Content */}
-      <div className="relative">
-        {/* Hero Section */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-32">
-          <div className="text-center">
+  const handleGetStarted = () => {
+    if (user) {
+      navigate('/dashboard');
+    } else {
+      navigate('/signup');
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-pink-50 via-purple-50 to-blue-50 overflow-hidden">
+      {/* Animated Background */}
+      <div className="fixed inset-0 z-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-pink-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+        <div className="absolute top-1/2 left-1/3 w-80 h-80 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+      </div>
+
+      {/* Navigation */}
+      <nav className="relative z-50 py-6 px-4 md:px-8">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <Link to="/" className="flex items-center gap-3">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
+              whileHover={{ rotate: 360 }}
+              transition={{ duration: 0.5 }}
+              className="w-10 h-10 rounded-xl bg-gradient-to-br from-pink-500 to-purple-500 flex items-center justify-center shadow-lg"
             >
-              {/* Badge */}
+              <Brain className="w-6 h-6 text-white" />
+            </motion.div>
+            <div>
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent font-display">
+                Physics Lab
+              </h1>
+              <p className="text-xs text-gray-600">SHM Simulator</p>
+            </div>
+          </Link>
+          
+          <div className="flex items-center gap-4">
+            <Link to="/features" className="text-gray-700 hover:text-pink-600 transition-colors font-medium">
+              Features
+            </Link>
+            <Link to="/about" className="text-gray-700 hover:text-pink-600 transition-colors font-medium">
+              About
+            </Link>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleGetStarted}
+              className="px-6 py-2.5 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-pink-300/50 transition-all flex items-center gap-2"
+            >
+              {user ? 'Go to Dashboard' : 'Get Started'}
+              <ArrowRight className="w-4 h-4" />
+            </motion.button>
+          </div>
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <motion.section 
+        id="hero"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="relative z-10 py-20 px-4 md:px-8"
+      >
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div>
               <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.2 }}
-                className="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-gradient-to-r from-pink-500/10 to-purple-500/10 border border-pink-200 mb-8 backdrop-blur-sm"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm border border-pink-200 rounded-full mb-6"
               >
                 <Sparkles className="w-4 h-4 text-amber-500" />
-                <span className="text-sm text-pink-600 font-medium">Physics Made Simple • 2025</span>
+                <span className="text-sm font-medium text-gray-700">The Future of Physics Education</span>
               </motion.div>
               
-              {/* Main title */}
-              <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 tracking-tight font-display">
-                <span className="bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent">
-                  Simple
+              <h1 className="text-5xl md:text-7xl font-bold text-gray-800 mb-6 font-display leading-tight">
+                Master <span className="bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">Physics</span> Through Interactive{' '}
+                <span className="relative">
+                  Simulations
+                  <svg className="absolute -bottom-2 left-0 w-full" height="12">
+                    <path d="M0,6 Q80,12 160,6 T320,6" stroke="url(#gradient)" strokeWidth="4" fill="none" />
+                    <defs>
+                      <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="#ec4899" />
+                        <stop offset="100%" stopColor="#8b5cf6" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
                 </span>
-                <br />
-                <span className="text-gray-800">Harmonic Lab</span>
               </h1>
               
-              {/* Subtitle */}
-              <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto mb-10 leading-relaxed">
-                Experience physics like never before with our interactive <span className="text-pink-600 font-semibold">Simple Harmonic Motion</span> simulator. 
-                Visualize complex concepts in real-time with beautiful, intuitive interfaces.
+              <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+                Experience simple harmonic motion like never before. Our interactive simulator combines cutting-edge technology with intuitive design to make physics learning engaging and effective.
               </p>
               
-              {/* Stats */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-2xl mx-auto mb-12">
-                {stats.map((stat, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 + 0.4 }}
-                    className="bg-white/60 backdrop-blur-sm border border-pink-200 rounded-2xl p-4 shadow-lg"
-                  >
-                    <div className={`text-3xl font-bold ${stat.color} mb-1`}>{stat.value}</div>
-                    <div className="text-gray-600 text-sm">{stat.label}</div>
-                  </motion.div>
-                ))}
-              </div>
-
-              {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-20">
-                <Link to="/simulation">
+              <div className="flex flex-col sm:flex-row gap-4 mb-12">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleGetStarted}
+                  className="px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-2xl font-bold text-lg hover:shadow-2xl hover:shadow-pink-300/50 transition-all flex items-center justify-center gap-3 group"
+                >
+                  <Rocket className="w-6 h-6" />
+                  Start Exploring Free
+                  <ChevronRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
+                </motion.button>
+                
+                <Link to="/demo">
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="group relative px-8 py-4 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold text-lg shadow-lg hover:shadow-xl hover:shadow-pink-300/30 transition-all overflow-hidden"
+                    className="px-8 py-4 bg-white/80 backdrop-blur-sm border-2 border-pink-200 text-gray-800 rounded-2xl font-bold text-lg hover:border-pink-300 hover:bg-white transition-all flex items-center justify-center gap-3"
                   >
-                    <span className="relative z-10 flex items-center gap-2">
-                      <Rocket className="w-5 h-5" />
-                      Launch Simulator
-                    </span>
-                    <div className="absolute inset-0 bg-gradient-to-r from-pink-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  </motion.button>
-                </Link>
-                <Link to="/quiz">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="px-8 py-4 rounded-xl bg-white/60 backdrop-blur-sm border border-pink-300 text-gray-800 font-semibold text-lg hover:bg-white/80 hover:border-pink-400 transition-all duration-300 shadow-lg"
-                  >
-                    Try Quiz
+                    <Play className="w-6 h-6 text-pink-500" />
+                    Watch Demo
                   </motion.button>
                 </Link>
               </div>
-            </motion.div>
-
-            {/* Demo Preview */}
+              
+              <div className="flex items-center gap-6">
+                <div className="flex -space-x-3">
+                  {['👩‍🔬', '👨‍🎓', '👩‍🏫', '👨‍🔧'].map((emoji, i) => (
+                    <div key={i} className="w-10 h-10 rounded-full bg-white border-2 border-pink-200 flex items-center justify-center text-lg">
+                      {emoji}
+                    </div>
+                  ))}
+                </div>
+                <div>
+                  <p className="text-gray-700 font-medium">Trusted by 10,000+ students & educators</p>
+                  <div className="flex items-center gap-1">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star key={star} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                    ))}
+                    <span className="text-gray-600 text-sm ml-2">4.9/5 rating</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Interactive Preview Card */}
             <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.6 }}
-              className="relative max-w-5xl mx-auto mt-20"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.4 }}
+              className="relative"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-pink-500/10 via-purple-500/10 to-blue-500/10 blur-3xl rounded-3xl" />
-              <div className="relative bg-white/80 backdrop-blur-xl rounded-3xl border border-pink-200 p-8 shadow-2xl">
+              <div className="bg-gradient-to-br from-white to-pink-50/50 backdrop-blur-sm rounded-3xl border-2 border-pink-200 p-8 shadow-2xl shadow-pink-300/20">
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-2xl font-bold text-gray-800 font-display">Live Simulation Preview</h3>
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                    <span className="text-emerald-600 font-medium">● LIVE</span>
-                  </div>
-                </div>
-                <div className="grid md:grid-cols-2 gap-8">
-                  <div className="space-y-4">
-                    <div className="h-64 bg-gradient-to-br from-pink-50 to-purple-50 rounded-2xl border border-pink-200 flex flex-col items-center justify-center p-6">
-                      <div className="relative mb-4">
-                        <Cpu className="w-20 h-20 text-pink-500" />
-                        <motion.div
-                          className="absolute -inset-4 rounded-full border-2 border-pink-300/30"
-                          animate={{
-                            scale: [1, 1.2, 1],
-                            opacity: [0.5, 0.8, 0.5]
-                          }}
-                          transition={{
-                            duration: 2,
-                            repeat: Infinity
-                          }}
-                        />
-                      </div>
-                      <h4 className="text-gray-800 font-semibold mb-2 font-display">Spring-Mass System</h4>
-                      <p className="text-gray-600 text-sm text-center">Real-time oscillation with adjustable parameters</p>
+                  <div className="flex items-center gap-3">
+                    <div className="p-3 rounded-xl bg-gradient-to-br from-pink-500 to-purple-500">
+                      <Zap className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-gray-800">Live Preview</h3>
+                      <p className="text-gray-600 text-sm">Spring-Mass Simulation</p>
                     </div>
                   </div>
-                  <div className="space-y-4">
-                    <div className="h-64 bg-gradient-to-br from-cyan-50 to-blue-50 rounded-2xl border border-cyan-200 flex flex-col items-center justify-center p-6">
-                      <BarChart3 className="w-20 h-20 text-blue-500 mb-4" />
-                      <h4 className="text-gray-800 font-semibold mb-2 font-display">Analytics Dashboard</h4>
-                      <p className="text-gray-600 text-sm text-center">Dynamic graphs showing energy distribution</p>
-                      <div className="mt-4 flex gap-2">
-                        <div className="w-8 h-1 bg-pink-500 rounded-full" />
-                        <div className="w-8 h-1 bg-purple-500 rounded-full" />
-                        <div className="w-8 h-1 bg-blue-500 rounded-full" />
-                        <div className="w-8 h-1 bg-emerald-500 rounded-full" />
-                      </div>
-                    </div>
+                  <div className="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-sm font-medium">
+                    Real-time
                   </div>
                 </div>
+                
+                {/* Animated Simulation Preview */}
+                <div className="relative h-64 mb-6 rounded-xl bg-gradient-to-br from-pink-500/10 to-purple-500/10 border border-pink-200 overflow-hidden">
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <motion.div
+                      animate={{
+                        y: [0, -40, 0],
+                      }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                      }}
+                      className="relative"
+                    >
+                      {/* Spring */}
+                      <div className="w-48 h-2 bg-gradient-to-r from-pink-400 to-purple-400 rounded-full mb-2"></div>
+                      {/* Mass */}
+                      <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-pink-500 to-purple-500 mx-auto shadow-lg"></div>
+                      {/* Base */}
+                      <div className="w-64 h-4 bg-gradient-to-r from-gray-300 to-gray-400 rounded-full mt-8"></div>
+                    </motion.div>
+                  </div>
+                  
+                  {/* Data Points */}
+                  <div className="absolute bottom-4 left-4 right-4 flex justify-between">
+                    {[0, 1, 2, 3, 4].map((i) => (
+                      <motion.div
+                        key={i}
+                        initial={{ opacity: 0, y: 0 }}
+                        animate={{ opacity: 1, y: -Math.sin(i) * 20 }}
+                        transition={{
+                          duration: 2,
+                          repeat: Infinity,
+                          delay: i * 0.2,
+                          ease: "easeInOut"
+                        }}
+                        className="w-2 h-2 rounded-full bg-pink-500"
+                      />
+                    ))}
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-3 gap-4 mb-6">
+                  {[
+                    { label: "Amplitude", value: "1.5m", color: "text-pink-600" },
+                    { label: "Frequency", value: "2.5Hz", color: "text-purple-600" },
+                    { label: "Energy", value: "45J", color: "text-emerald-600" }
+                  ].map((item, i) => (
+                    <div key={i} className="text-center p-3 bg-white/60 rounded-xl border border-pink-100">
+                      <p className="text-gray-600 text-sm">{item.label}</p>
+                      <p className={`text-lg font-bold ${item.color}`}>{item.value}</p>
+                    </div>
+                  ))}
+                </div>
+                
+                <button 
+                  onClick={handleGetStarted}
+                  className="w-full py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-pink-300/50 transition-all flex items-center justify-center gap-2"
+                >
+                  <Play className="w-4 h-4" />
+                  Launch Simulation
+                </button>
               </div>
+              
+              {/* Floating Elements */}
+              <motion.div
+                animate={{ y: [0, -10, 0] }}
+                transition={{ duration: 3, repeat: Infinity }}
+                className="absolute -top-6 -left-6 w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-500 to-purple-500 flex items-center justify-center shadow-xl"
+              >
+                <TrendingUp className="w-6 h-6 text-white" />
+              </motion.div>
+              
+              <motion.div
+                animate={{ y: [0, 10, 0] }}
+                transition={{ duration: 4, repeat: Infinity, delay: 1 }}
+                className="absolute -bottom-6 -right-6 w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center shadow-xl"
+              >
+                <Target className="w-6 h-6 text-white" />
+              </motion.div>
             </motion.div>
           </div>
         </div>
+      </motion.section>
 
-        {/* Features Grid */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-32">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4 font-display">
-              Everything You Need for <span className="text-transparent bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text">Modern Physics</span>
+      {/* Stats Section */}
+      <section className="relative z-10 py-16 px-4 md:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {stats.map((stat, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 + 0.6 }}
+                whileHover={{ scale: 1.05 }}
+                className="bg-white/80 backdrop-blur-sm border border-pink-200 rounded-2xl p-6 text-center hover:border-pink-300 transition-all"
+              >
+                <div className="flex items-center justify-center gap-3 mb-4">
+                  <div className={`p-3 rounded-xl bg-gradient-to-br ${
+                    index === 0 ? 'from-pink-500 to-purple-500' :
+                    index === 1 ? 'from-emerald-500 to-cyan-500' :
+                    index === 2 ? 'from-orange-500 to-amber-500' :
+                    'from-blue-500 to-indigo-500'
+                  }`}>
+                    {stat.icon}
+                  </div>
+                </div>
+                <h3 className="text-3xl font-bold text-gray-800 mb-2">{stat.value}</h3>
+                <p className="text-gray-600">{stat.label}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="relative z-10 py-20 px-4 md:px-8 bg-gradient-to-b from-white/50 to-pink-50/50">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm border border-pink-200 rounded-full mb-4"
+            >
+              <Sparkles className="w-4 h-4 text-amber-500" />
+              <span className="text-sm font-medium text-gray-700">Why Choose Physics Lab</span>
+            </motion.div>
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6 font-display">
+              Everything You Need to <span className="bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">Master Physics</span>
             </h2>
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-              A comprehensive toolkit designed for students, educators, and researchers
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              From interactive simulations to AI-powered analysis, we provide all the tools for effective physics learning.
             </p>
-          </motion.div>
+          </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {features.map((feature, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                whileHover={{ 
-                  scale: 1.03, 
-                  translateY: -8,
-                  boxShadow: "0 20px 40px rgba(0, 0, 0, 0.1)"
-                }}
-                className="group relative bg-white/80 backdrop-blur-sm border border-pink-200 rounded-2xl p-6 hover:border-pink-300 transition-all duration-500 overflow-hidden shadow-lg"
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                onMouseEnter={() => setActiveFeature(index)}
+                className={`bg-white/80 backdrop-blur-sm border rounded-2xl p-6 cursor-pointer transition-all duration-300 ${
+                  activeFeature === index 
+                    ? 'border-pink-300 shadow-2xl shadow-pink-300/20 scale-105' 
+                    : 'border-pink-200 hover:border-pink-300'
+                }`}
               >
-                {/* Background gradient on hover */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
-                
-                <div className={`mb-4 p-3 rounded-xl bg-gradient-to-br ${feature.gradient} bg-opacity-10 w-fit`}>
-                  <div className={feature.gradient.includes('pink') ? 'text-pink-500' : 
-                                 feature.gradient.includes('emerald') ? 'text-emerald-500' :
-                                 feature.gradient.includes('amber') ? 'text-amber-500' :
-                                 'text-blue-500'}>
-                    {feature.icon}
-                  </div>
+                <div className={`p-4 rounded-xl bg-gradient-to-br ${feature.color} w-fit mb-6`}>
+                  {feature.icon}
                 </div>
-                <h3 className="text-xl font-semibold text-gray-800 mb-3 font-display">{feature.title}</h3>
-                <p className="text-gray-600">{feature.description}</p>
-                
-                {/* Hover indicator */}
-                <div className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${feature.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-b-2xl`} />
+                <h3 className="text-xl font-bold text-gray-800 mb-3">{feature.title}</h3>
+                <p className="text-gray-600 mb-4">{feature.description}</p>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-gray-500">{feature.stats}</span>
+                  <ChevronRight className={`w-5 h-5 transition-transform ${
+                    activeFeature === index ? 'translate-x-2 text-pink-500' : 'text-gray-400'
+                  }`} />
+                </div>
               </motion.div>
             ))}
           </div>
         </div>
+      </section>
 
-        {/* Testimonials */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-32">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4 font-display">
-              Loved by <span className="text-transparent bg-gradient-to-r from-emerald-500 to-cyan-500 bg-clip-text">Students & Educators</span>
+      {/* Testimonials */}
+      <section className="relative z-10 py-20 px-4 md:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6 font-display">
+              Loved by <span className="bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">Students & Educators</span>
             </h2>
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-              See what our community has to say about their learning journey
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Join thousands of users who have transformed their physics learning experience.
             </p>
-          </motion.div>
-
+          </div>
+          
           <div className="grid md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.2 }}
-                className="bg-white/80 backdrop-blur-sm border border-pink-200 rounded-2xl p-8 shadow-lg"
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.2 }}
+                className="bg-white/80 backdrop-blur-sm border border-pink-200 rounded-2xl p-6 hover:border-pink-300 transition-all"
               >
-                <div className={`mb-6 p-2 rounded-xl bg-gradient-to-br ${testimonial.color} bg-opacity-10 w-fit`}>
-                  <Award className="w-6 h-6" />
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="text-3xl">{testimonial.avatar}</div>
+                  <div>
+                    <h4 className="font-bold text-gray-800">{testimonial.name}</h4>
+                    <p className="text-gray-600 text-sm">{testimonial.role}</p>
+                  </div>
                 </div>
-                <p className="text-gray-700 text-lg mb-6 italic">"{testimonial.quote}"</p>
-                <div>
-                  <div className="font-semibold text-gray-800">{testimonial.author}</div>
-                  <div className="text-gray-600 text-sm">{testimonial.role}</div>
+                <p className="text-gray-700 mb-4 italic">"{testimonial.content}"</p>
+                <div className="flex items-center gap-1">
+                  {[...Array(testimonial.rating)].map((_, i) => (
+                    <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                  ))}
                 </div>
               </motion.div>
             ))}
           </div>
         </div>
+      </section>
 
-        {/* Final CTA */}
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-32">
+      {/* CTA Section */}
+      <section className="relative z-10 py-20 px-4 md:px-8">
+        <div className="max-w-4xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            className="relative"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="bg-gradient-to-br from-pink-500 to-purple-500 rounded-3xl p-8 md:p-12 text-center text-white shadow-2xl shadow-pink-500/30"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-pink-500/10 via-purple-500/10 to-blue-500/10 blur-3xl rounded-full" />
-            <div className="relative bg-gradient-to-br from-white/90 to-pink-50/80 backdrop-blur-xl rounded-3xl border border-pink-200 p-12 text-center shadow-2xl">
-              <h2 className="text-4xl font-bold text-gray-800 mb-6 font-display">
-                Ready to <span className="text-transparent bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text">Transform</span> Your Learning?
-              </h2>
-              <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-                Join thousands of students and educators who are already mastering physics with Harmonic Lab
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link to="/signup">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="px-10 py-5 rounded-2xl bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-white font-bold text-lg shadow-xl hover:shadow-2xl hover:shadow-pink-300/30 transition-all duration-300"
-                  >
-                    Get Started For Free
-                  </motion.button>
-                </Link>
-                <Link to="/simulation">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="px-10 py-5 rounded-2xl bg-white/80 backdrop-blur-sm border border-pink-300 text-gray-800 font-semibold text-lg hover:bg-white hover:border-pink-400 transition-all duration-300 shadow-lg"
-                  >
-                    Try Interactive Demo
-                  </motion.button>
-                </Link>
-              </div>
-              <p className="text-gray-500 text-sm mt-6">
-                No registration required • Free forever plan • Start learning in seconds
-              </p>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 font-display">
+              Ready to Transform Your Physics Learning?
+            </h2>
+            <p className="text-xl mb-8 opacity-90">
+              Join thousands of successful students and educators. Start for free, no credit card required.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleGetStarted}
+                className="px-8 py-4 bg-white text-gray-800 rounded-2xl font-bold text-lg hover:shadow-2xl transition-all flex items-center justify-center gap-3"
+              >
+                <Rocket className="w-6 h-6" />
+                Start Free Trial
+              </motion.button>
+              
+              <Link to="/demo">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="px-8 py-4 bg-white/20 backdrop-blur-sm border-2 border-white/30 text-white rounded-2xl font-bold text-lg hover:bg-white/30 transition-all flex items-center justify-center gap-3"
+                >
+                  <Play className="w-6 h-6" />
+                  Watch Demo
+                </motion.button>
+              </Link>
             </div>
+            
+            <p className="mt-6 text-sm opacity-80">
+              Free forever plan available • No credit card required • Cancel anytime
+            </p>
           </motion.div>
         </div>
-      </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="relative z-10 py-12 px-4 md:px-8 border-t border-pink-200 bg-white/50">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-4 gap-8 mb-8">
+            <div>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-pink-500 to-purple-500 flex items-center justify-center">
+                  <Brain className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent font-display">
+                    Physics Lab
+                  </h3>
+                  <p className="text-xs text-gray-600">SHM Simulator</p>
+                </div>
+              </div>
+              <p className="text-gray-600">
+                Making physics education accessible, engaging, and effective through interactive simulations.
+              </p>
+            </div>
+            
+            <div>
+              <h4 className="font-bold text-gray-800 mb-4">Product</h4>
+              <ul className="space-y-2">
+                <li><Link to="/features" className="text-gray-600 hover:text-pink-600 transition-colors">Features</Link></li>
+                <li><Link to="/pricing" className="text-gray-600 hover:text-pink-600 transition-colors">Pricing</Link></li>
+                <li><Link to="/demo" className="text-gray-600 hover:text-pink-600 transition-colors">Demo</Link></li>
+                <li><Link to="/updates" className="text-gray-600 hover:text-pink-600 transition-colors">Updates</Link></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h4 className="font-bold text-gray-800 mb-4">Resources</h4>
+              <ul className="space-y-2">
+                <li><Link to="/tutorials" className="text-gray-600 hover:text-pink-600 transition-colors">Tutorials</Link></li>
+                <li><Link to="/docs" className="text-gray-600 hover:text-pink-600 transition-colors">Documentation</Link></li>
+                <li><Link to="/blog" className="text-gray-600 hover:text-pink-600 transition-colors">Blog</Link></li>
+                <li><Link to="/support" className="text-gray-600 hover:text-pink-600 transition-colors">Support</Link></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h4 className="font-bold text-gray-800 mb-4">Connect</h4>
+              <ul className="space-y-2">
+                <li><Link to="/twitter" className="text-gray-600 hover:text-pink-600 transition-colors">Twitter</Link></li>
+                <li><Link to="/discord" className="text-gray-600 hover:text-pink-600 transition-colors">Discord</Link></li>
+                <li><Link to="/github" className="text-gray-600 hover:text-pink-600 transition-colors">GitHub</Link></li>
+                <li><Link to="/contact" className="text-gray-600 hover:text-pink-600 transition-colors">Contact</Link></li>
+              </ul>
+            </div>
+          </div>
+          
+          <div className="pt-8 border-t border-pink-200 text-center text-gray-600 text-sm">
+            <p>© {new Date().getFullYear()} Physics Lab SHM Simulator. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
+
+      {/* Add custom animations */}
+      <style jsx>{`
+        @keyframes blob {
+          0% {
+            transform: translate(0px, 0px) scale(1);
+          }
+          33% {
+            transform: translate(30px, -50px) scale(1.1);
+          }
+          66% {
+            transform: translate(-20px, 20px) scale(0.9);
+          }
+          100% {
+            transform: translate(0px, 0px) scale(1);
+          }
+        }
+        .animate-blob {
+          animation: blob 7s infinite;
+        }
+        .animation-delay-2000 {
+          animation-delay: 2s;
+        }
+        .animation-delay-4000 {
+          animation-delay: 4s;
+        }
+      `}</style>
     </div>
   );
 };

@@ -6,6 +6,7 @@ import { SimulationProvider } from './contexts/SimulationContext';
 import Layout from './components/common/Layout';
 import LoadingScreen from './components/ui/LoadingScreen';
 import ProtectedRoute from './components/auth/ProtectedRoute';
+import SavedSimulationsPage from './pages/SavedSimulationsPage';
 
 // Lazy load pages for better performance
 const LandingPage = lazy(() => import('./pages/LandingPage'));
@@ -42,6 +43,7 @@ function App() {
                   <Route path="/graphs" element={<GraphsPage />} />
                   <Route path="/quiz" element={<QuizPage />} />
                   <Route path="/tutorials" element={<TutorialsPage />} />
+                  <Route path="/saved-simulations" element={<SavedSimulationsPage />} />
                 </Route>
                 {/* GamePage might not need the Layout wrapper if it's fullscreen */}
                 <Route path="/game" element={<GamePage />} /> {/* ADDED */}

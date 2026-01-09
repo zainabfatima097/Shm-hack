@@ -271,7 +271,7 @@ const LoadingScreen = ({ type = 'default' }) => {
       >
         <div className="bg-white/40 backdrop-blur-sm border border-pink-200 rounded-full px-4 py-2">
           <p className="text-gray-600 text-sm">
-            Powered by <span className="font-semibold text-pink-600">React Harmonic Engine</span>
+            Powered by <span className="font-semibold text-pink-600">Innovation</span>
           </p>
         </div>
       </motion.div>

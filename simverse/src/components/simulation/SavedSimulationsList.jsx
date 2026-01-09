@@ -1,9 +1,9 @@
-// components/simulation/SavedSimulationsList.jsx
 import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { 
   FolderOpen, Trash2, Clock, Target, Zap, X, 
-  Download, Upload, Edit, Play, Search, FileText, Hash, BarChart3, Copy
+  Download, Upload, Edit, Play, Search, FileText, Hash, BarChart3, Copy,
+  Filter, SortAsc
 } from 'lucide-react';
 
 const SavedSimulationsList = ({ 
@@ -59,7 +59,7 @@ const SavedSimulationsList = ({
 
   const handleLoad = (simulation) => {
     if (onLoad) {
-      onLoad(simulation.id);
+      onLoad(simulation);
     }
     onClose();
   };
@@ -110,7 +110,6 @@ const SavedSimulationsList = ({
 
   const handleSaveEdit = (simulationId, e) => {
     e.stopPropagation();
-    // Here you would call an update function from context
     console.log('Save edit:', simulationId, editTitle, editDescription);
     setEditingSim(null);
     setEditTitle('');
@@ -148,52 +147,63 @@ const SavedSimulationsList = ({
   const getSimulationIcon = (type) => {
     switch (type) {
       case 'spring':
-        return <Zap className="w-4 h-4 text-blue-400" />;
+        return <Zap className="w-4 h-4 text-pink-500" />;
       case 'pendulum':
-        return <Target className="w-4 h-4 text-green-400" />;
+        return <Target className="w-4 h-4 text-emerald-500" />;
       default:
-        return <FileText className="w-4 h-4 text-gray-400" />;
+        return <FileText className="w-4 h-4 text-purple-500" />;
     }
   };
 
   const getTypeColor = (type) => {
     switch (type) {
       case 'spring':
-        return 'bg-blue-500/20 text-blue-400 border-blue-500/20';
+        return 'bg-pink-500/20 text-pink-400 border-pink-500/20';
       case 'pendulum':
-        return 'bg-green-500/20 text-green-400 border-green-500/20';
+        return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/20';
       default:
-        return 'bg-gray-500/20 text-gray-400 border-gray-500/20';
+        return 'bg-purple-500/20 text-purple-400 border-purple-500/20';
+    }
+  };
+
+  const getTypeBadgeColor = (type) => {
+    switch (type) {
+      case 'spring':
+        return 'bg-pink-100 text-pink-700 border-pink-200';
+      case 'pendulum':
+        return 'bg-emerald-100 text-emerald-700 border-emerald-200';
+      default:
+        return 'bg-purple-100 text-purple-700 border-purple-200';
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
       <motion.div
         initial={{ opacity: 0, scale: 0.9, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.9, y: 20 }}
-        className="bg-gray-900 border border-white/10 rounded-2xl w-full max-w-4xl max-h-[80vh] flex flex-col shadow-2xl"
+        className="bg-gradient-to-b from-white/95 to-pink-50/95 backdrop-blur-xl border border-pink-200 rounded-2xl w-full max-w-4xl max-h-[85vh] flex flex-col shadow-2xl shadow-pink-300/20"
       >
         {/* Header */}
-        <div className="p-6 border-b border-white/10 flex-shrink-0">
-          <div className="flex items-center justify-between mb-4">
+        <div className="p-6 border-b border-pink-200 flex-shrink-0">
+          <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-xl bg-gradient-to-br from-blue-500/20 to-purple-500/20">
-                <FolderOpen className="w-6 h-6 text-blue-400" />
+              <div className="p-2 rounded-xl bg-gradient-to-br from-pink-500/20 to-purple-500/20">
+                <FolderOpen className="w-6 h-6 text-pink-500" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-white">Saved Simulations</h2>
-                <p className="text-sm text-gray-400">
+                <h2 className="text-2xl font-bold text-gray-800 font-display">Saved Simulations</h2>
+                <p className="text-sm text-gray-600">
                   {simulations.length} total • {filteredSimulations.length} filtered
                 </p>
               </div>
             </div>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+              className="p-2 hover:bg-pink-50 rounded-lg transition-colors border border-pink-200"
             >
-              <X className="w-5 h-5 text-gray-400" />
+              <X className="w-5 h-5 text-gray-600" />
             </button>
           </div>
 
@@ -206,29 +216,35 @@ const SavedSimulationsList = ({
                 placeholder="Search simulations..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 bg-gray-800/50 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-colors"
+                className="w-full pl-10 pr-4 py-2.5 bg-white/60 backdrop-blur-sm border border-pink-200 rounded-xl text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-pink-300 transition-colors"
               />
             </div>
 
-            <select
-              value={filterType}
-              onChange={(e) => setFilterType(e.target.value)}
-              className="px-4 py-2.5 bg-gray-800/50 border border-white/10 rounded-xl text-white focus:outline-none focus:border-blue-500 transition-colors"
-            >
-              <option value="all">All Types</option>
-              <option value="spring">Spring-Mass</option>
-              <option value="pendulum">Pendulum</option>
-            </select>
+            <div className="relative">
+              <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <select
+                value={filterType}
+                onChange={(e) => setFilterType(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 bg-white/60 backdrop-blur-sm border border-pink-200 rounded-xl text-gray-800 focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-pink-300 transition-colors appearance-none"
+              >
+                <option value="all">All Types</option>
+                <option value="spring">Spring-Mass</option>
+                <option value="pendulum">Pendulum</option>
+              </select>
+            </div>
 
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="px-4 py-2.5 bg-gray-800/50 border border-white/10 rounded-xl text-white focus:outline-none focus:border-blue-500 transition-colors"
-            >
-              <option value="date">Sort by Date</option>
-              <option value="name">Sort by Name</option>
-              <option value="type">Sort by Type</option>
-            </select>
+            <div className="relative">
+              <SortAsc className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 bg-white/60 backdrop-blur-sm border border-pink-200 rounded-xl text-gray-800 focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-pink-300 transition-colors appearance-none"
+              >
+                <option value="date">Sort by Date</option>
+                <option value="name">Sort by Name</option>
+                <option value="type">Sort by Type</option>
+              </select>
+            </div>
           </div>
 
           {/* Bulk Actions */}
@@ -236,26 +252,26 @@ const SavedSimulationsList = ({
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mt-4 p-3 bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20 rounded-xl"
+              className="mt-4 p-4 bg-gradient-to-r from-pink-50 to-purple-50 border border-pink-200 rounded-xl"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <Hash className="w-4 h-4 text-blue-400" />
-                  <span className="text-white font-medium">
+                  <Hash className="w-4 h-4 text-pink-500" />
+                  <span className="text-gray-800 font-medium">
                     {selectedSims.length} simulation{selectedSims.length !== 1 ? 's' : ''} selected
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={handleExportSelected}
-                    className="px-3 py-1.5 bg-blue-500/20 hover:bg-blue-500/30 border border-blue-500/30 text-blue-400 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+                    className="px-3 py-1.5 bg-pink-500/10 hover:bg-pink-500/20 border border-pink-300 text-pink-600 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
                   >
                     <Download className="w-3 h-3" />
                     Export Selected
                   </button>
                   <button
                     onClick={handleBulkDelete}
-                    className="px-3 py-1.5 bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 text-red-400 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+                    className="px-3 py-1.5 bg-red-500/10 hover:bg-red-500/20 border border-red-300 text-red-600 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
                   >
                     <Trash2 className="w-3 h-3" />
                     Delete Selected
@@ -270,11 +286,11 @@ const SavedSimulationsList = ({
         <div className="flex-1 overflow-y-auto p-6">
           {filteredSimulations.length === 0 ? (
             <div className="text-center py-12">
-              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-800/50 flex items-center justify-center">
-                <FolderOpen className="w-8 h-8 text-gray-400" />
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-pink-50 flex items-center justify-center">
+                <FolderOpen className="w-8 h-8 text-pink-400" />
               </div>
-              <h3 className="text-white font-semibold mb-2">No simulations found</h3>
-              <p className="text-gray-400 mb-6">
+              <h3 className="text-gray-800 font-semibold mb-2 font-display">No simulations found</h3>
+              <p className="text-gray-600 mb-6">
                 {searchTerm || filterType !== 'all' 
                   ? 'Try adjusting your search or filters' 
                   : 'Save your first simulation to get started'}
@@ -289,10 +305,10 @@ const SavedSimulationsList = ({
                   animate={{ opacity: 1, scale: 1 }}
                   whileHover={{ scale: 1.02 }}
                   onClick={() => handleLoad(simulation)}
-                  className={`relative bg-gray-800/30 border rounded-xl p-4 cursor-pointer transition-all duration-200 group ${
+                  className={`relative bg-white/60 backdrop-blur-sm border rounded-xl p-4 cursor-pointer transition-all duration-200 group ${
                     selectedSims.includes(simulation.id)
-                      ? 'border-blue-500/50 bg-blue-500/10'
-                      : 'border-white/10 hover:border-blue-500/30'
+                      ? 'border-pink-500/50 bg-gradient-to-r from-pink-50 to-purple-50'
+                      : 'border-pink-200 hover:border-pink-300 hover:bg-pink-50/50'
                   }`}
                 >
                   {/* Selection Checkbox */}
@@ -304,15 +320,13 @@ const SavedSimulationsList = ({
                       type="checkbox"
                       checked={selectedSims.includes(simulation.id)}
                       onChange={() => handleSelectSim(simulation.id)}
-                      className="w-4 h-4 rounded border-white/20 bg-gray-800 text-blue-500 focus:ring-blue-500 focus:ring-offset-gray-900"
+                      className="w-4 h-4 rounded border-pink-300 bg-white text-pink-500 focus:ring-pink-300 focus:ring-offset-pink-50"
                     />
                   </div>
 
                   {/* Simulation Header */}
                   <div className="flex items-start gap-3 mb-3">
-                    <div className={`p-2 rounded-lg ${getTypeColor(simulation.type).split(' ')[0]} border ${
-                      getTypeColor(simulation.type).split(' ')[2]
-                    }`}>
+                    <div className={`p-2 rounded-lg ${getTypeColor(simulation.type)}`}>
                       {getSimulationIcon(simulation.type)}
                     </div>
                     
@@ -323,26 +337,26 @@ const SavedSimulationsList = ({
                             type="text"
                             value={editTitle}
                             onChange={(e) => setEditTitle(e.target.value)}
-                            className="w-full px-3 py-1.5 bg-gray-900 border border-white/10 rounded text-white text-sm focus:outline-none focus:border-blue-500"
+                            className="w-full px-3 py-1.5 bg-white/80 border border-pink-200 rounded text-gray-800 text-sm focus:outline-none focus:border-pink-300 focus:ring-1 focus:ring-pink-300"
                             onClick={(e) => e.stopPropagation()}
                           />
                           <textarea
                             value={editDescription}
                             onChange={(e) => setEditDescription(e.target.value)}
                             rows={2}
-                            className="w-full px-3 py-1.5 bg-gray-900 border border-white/10 rounded text-white text-sm focus:outline-none focus:border-blue-500 resize-none"
+                            className="w-full px-3 py-1.5 bg-white/80 border border-pink-200 rounded text-gray-800 text-sm focus:outline-none focus:border-pink-300 focus:ring-1 focus:ring-pink-300 resize-none"
                             onClick={(e) => e.stopPropagation()}
                           />
                           <div className="flex items-center gap-2">
                             <button
                               onClick={(e) => handleSaveEdit(simulation.id, e)}
-                              className="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
+                              className="px-3 py-1 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded text-sm hover:shadow-pink-300/50 transition-all"
                             >
                               Save
                             </button>
                             <button
                               onClick={handleCancelEdit}
-                              className="px-3 py-1 bg-gray-700 text-gray-300 rounded text-sm hover:bg-gray-600"
+                              className="px-3 py-1 bg-gray-200 text-gray-700 rounded text-sm hover:bg-gray-300 transition-colors"
                             >
                               Cancel
                             </button>
@@ -351,14 +365,14 @@ const SavedSimulationsList = ({
                       ) : (
                         <>
                           <div className="flex items-center gap-2 mb-1">
-                            <h3 className="text-white font-semibold truncate">
+                            <h3 className="text-gray-800 font-semibold truncate">
                               {simulation.title || 'Untitled Simulation'}
                             </h3>
-                            <span className={`px-2 py-0.5 rounded-full text-xs ${getTypeColor(simulation.type)}`}>
+                            <span className={`px-2 py-0.5 rounded-full text-xs ${getTypeBadgeColor(simulation.type)}`}>
                               {simulation.type}
                             </span>
                           </div>
-                          <p className="text-gray-400 text-sm line-clamp-2">
+                          <p className="text-gray-600 text-sm line-clamp-2">
                             {simulation.description || 'No description'}
                           </p>
                         </>
@@ -386,22 +400,24 @@ const SavedSimulationsList = ({
                           {Object.entries(simulation.parameters)
                             .slice(0, 4)
                             .map(([key, value]) => (
-                              <div key={key} className="flex justify-between bg-gray-800/50 px-2 py-1 rounded">
-                                <span className="text-gray-400">{key}:</span>
-                                <span className="text-white font-mono">{typeof value === 'number' ? value.toFixed(2) : value}</span>
+                              <div key={key} className="flex justify-between bg-white/80 px-2 py-1 rounded border border-pink-100">
+                                <span className="text-gray-500">{key}:</span>
+                                <span className="text-gray-800 font-mono font-medium">
+                                  {typeof value === 'number' ? value.toFixed(2) : value}
+                                </span>
                               </div>
                             ))}
                         </div>
                       )}
 
                       {/* Action Buttons */}
-                      <div className="flex items-center justify-between border-t border-white/10 pt-3">
+                      <div className="flex items-center justify-between border-t border-pink-100 pt-3">
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
                             handleLoad(simulation);
                           }}
-                          className="px-3 py-1.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg text-sm font-medium hover:shadow-lg hover:shadow-blue-500/25 transition-all flex items-center gap-2"
+                          className="px-3 py-1.5 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-lg text-sm font-medium hover:shadow-lg hover:shadow-pink-300/50 transition-all flex items-center gap-2 shadow-sm"
                         >
                           <Play className="w-3 h-3" />
                           Load
@@ -410,28 +426,27 @@ const SavedSimulationsList = ({
                         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                           <button
                             onClick={(e) => handleEdit(simulation, e)}
-                            className="p-1.5 hover:bg-white/10 rounded transition-colors"
+                            className="p-1.5 hover:bg-pink-50 rounded transition-colors border border-pink-200"
                             title="Edit"
                           >
-                            <Edit className="w-4 h-4 text-gray-400 hover:text-blue-400" />
+                            <Edit className="w-4 h-4 text-gray-600 hover:text-pink-500" />
                           </button>
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              // Duplicate functionality
                               console.log('Duplicate:', simulation.id);
                             }}
-                            className="p-1.5 hover:bg-white/10 rounded transition-colors"
+                            className="p-1.5 hover:bg-emerald-50 rounded transition-colors border border-emerald-200"
                             title="Duplicate"
                           >
-                            <Copy className="w-4 h-4 text-gray-400 hover:text-green-400" />
+                            <Copy className="w-4 h-4 text-gray-600 hover:text-emerald-500" />
                           </button>
                           <button
                             onClick={(e) => handleDelete(simulation.id, e)}
-                            className="p-1.5 hover:bg-red-500/10 rounded transition-colors"
+                            className="p-1.5 hover:bg-red-50 rounded transition-colors border border-red-200"
                             title="Delete"
                           >
-                            <Trash2 className="w-4 h-4 text-red-400" />
+                            <Trash2 className="w-4 h-4 text-red-500" />
                           </button>
                         </div>
                       </div>
@@ -444,12 +459,12 @@ const SavedSimulationsList = ({
         </div>
 
         {/* Footer */}
-        <div className="p-6 border-t border-white/10 flex-shrink-0">
+        <div className="p-6 border-t border-pink-200 flex-shrink-0">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <button
                 onClick={handleSelectAll}
-                className="text-sm text-gray-400 hover:text-white transition-colors"
+                className="text-sm text-gray-600 hover:text-gray-800 transition-colors font-medium"
               >
                 {selectedSims.length === filteredSimulations.length && filteredSimulations.length > 0
                   ? 'Deselect All'
@@ -464,14 +479,14 @@ const SavedSimulationsList = ({
             <div className="flex items-center gap-3">
               <button
                 onClick={onImport}
-                className="px-4 py-2 border border-white/10 text-gray-300 rounded-lg hover:bg-gray-800/50 hover:text-white hover:border-white/20 transition-colors flex items-center gap-2"
+                className="px-4 py-2 border border-pink-200 text-gray-700 rounded-lg hover:bg-pink-50 hover:text-gray-800 hover:border-pink-300 transition-colors flex items-center gap-2"
               >
                 <Upload className="w-4 h-4" />
                 Import
               </button>
               <button
                 onClick={onExport ? () => onExport(filteredSimulations) : undefined}
-                className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg font-medium hover:shadow-lg hover:shadow-blue-500/25 transition-all flex items-center gap-2"
+                className="px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-lg font-medium hover:shadow-lg hover:shadow-pink-300/50 transition-all flex items-center gap-2 shadow-sm"
               >
                 <Download className="w-4 h-4" />
                 Export All

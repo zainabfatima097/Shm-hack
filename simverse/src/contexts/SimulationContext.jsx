@@ -1,20 +1,22 @@
-// contexts/SimulationContext.jsx
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
+import { useAuth } from './AuthContext';
 import { generateRealTimeDataPoint } from '../utils/dataGenerators';
 
 const SimulationContext = createContext();
 
 export const useSimulationContext = () => {
-  const context = useContext(SimulationContext);
-  if (!context) {
-    throw new Error('useSimulationContext must be used within SimulationProvider');
+  const simulationContext = useContext(SimulationContext);
+  if (!simulationContext) {
+    throw new Error('useSimulationContext must be used within a SimulationProvider');
   }
-  return context;
+  return simulationContext;
 };
 
 export const SimulationProvider = ({ children }) => {
-  // Initialize from localStorage
-  const [savedSimulations, setSavedSimulations] = useState(() => {
+  const { user, saveSimulation: authSaveSimulation, userSimulations: authUserSimulations } = useAuth();
+
+  // Store all simulations (for backward compatibility)
+  const [localSavedSimulations, setLocalSavedSimulations] = useState(() => {
     try {
       const saved = localStorage.getItem('shm_saved_simulations');
       return saved ? JSON.parse(saved) : [];
@@ -40,14 +42,22 @@ export const SimulationProvider = ({ children }) => {
   const [realTimeData, setRealTimeData] = useState([]);
   const [activeGraph, setActiveGraph] = useState('displacement');
 
-  // Save simulations to localStorage whenever they change
+  // Combine auth user simulations with local simulations - memoized
+  const savedSimulations = useMemo(() => {
+    if (user) {
+      return [...authUserSimulations, ...localSavedSimulations.filter(sim => !sim.userId || sim.userId === 'anonymous')];
+    }
+    return localSavedSimulations;
+  }, [user, authUserSimulations, localSavedSimulations]);
+
+  // Save simulations to localStorage whenever they change (for backward compatibility)
   useEffect(() => {
     try {
-      localStorage.setItem('shm_saved_simulations', JSON.stringify(savedSimulations));
+      localStorage.setItem('shm_saved_simulations', JSON.stringify(localSavedSimulations));
     } catch (error) {
       console.error('Error saving simulations to localStorage:', error);
     }
-  }, [savedSimulations]);
+  }, [localSavedSimulations]);
 
   // Animation loop
   useEffect(() => {
@@ -68,7 +78,6 @@ export const SimulationProvider = ({ children }) => {
           const dataPoint = generateRealTimeDataPoint(simulationType, parameters, newTime);
           setRealTimeData(prevData => {
             const newData = [...prevData, dataPoint];
-            // Keep only last 200 points for performance
             return newData.slice(-200);
           });
         }
@@ -112,10 +121,9 @@ export const SimulationProvider = ({ children }) => {
     }));
   }, []);
 
-  // Save Simulation Function
+  // Save Simulation Function - Now integrates with AuthContext
   const saveSimulation = useCallback((title, description = '') => {
-    const newSimulation = {
-      id: Date.now().toString(),
+    const simulationData = {
       title: title.trim(),
       description: description.trim(),
       type: simulationType,
@@ -123,19 +131,33 @@ export const SimulationProvider = ({ children }) => {
       time,
       isPlaying,
       createdAt: new Date().toISOString(),
-      realTimeData: realTimeData.slice(-50), // Save last 50 data points
+      realTimeData: realTimeData.slice(-50),
     };
 
-    setSavedSimulations(prev => {
+    if (user && authSaveSimulation) {
+      // Save to AuthContext (user-specific storage)
+      const result = authSaveSimulation(simulationData);
+      if (result && result.success) {
+        return result.id || Date.now().toString();
+      }
+    }
+
+    // Fallback: Save locally
+    const newSimulation = {
+      ...simulationData,
+      id: Date.now().toString(),
+      userId: user ? user.id : 'anonymous',
+    };
+
+    setLocalSavedSimulations(prev => {
       const updated = [newSimulation, ...prev];
-      // Keep only the latest 100 simulations
       return updated.slice(0, 100);
     });
 
-    return newSimulation.id; // Return the ID for immediate loading if needed
-  }, [simulationType, parameters, time, isPlaying, realTimeData]);
+    return newSimulation.id;
+  }, [simulationType, parameters, time, isPlaying, realTimeData, user, authSaveSimulation]);
 
-  // Load Simulation Function
+  // Load Simulation Function - FIXED: use memoized savedSimulations
   const loadSimulation = useCallback((simulationId) => {
     const simulation = savedSimulations.find(sim => sim.id === simulationId);
     if (!simulation) {
@@ -167,99 +189,29 @@ export const SimulationProvider = ({ children }) => {
 
     // Start playing if it was playing when saved
     if (simulation.isPlaying) {
-      // Small delay to ensure state is updated
       setTimeout(() => setIsPlaying(true), 100);
     }
 
     return true;
   }, [savedSimulations]);
 
-  // Delete Simulation Function
+  // Delete Simulation Function - FIXED: removed unused authSimulations variable
   const deleteSimulation = useCallback((simulationId) => {
-    setSavedSimulations(prev => prev.filter(sim => sim.id !== simulationId));
+    // Delete from local storage
+    setLocalSavedSimulations(prev => prev.filter(sim => sim.id !== simulationId));
   }, []);
 
-  // Update Simulation Function (for editing title/description)
-  const updateSimulation = useCallback((simulationId, updates) => {
-    setSavedSimulations(prev => 
-      prev.map(sim => 
-        sim.id === simulationId 
-          ? { ...sim, ...updates, updatedAt: new Date().toISOString() }
-          : sim
-      )
-    );
-  }, []);
-
-  // Export Simulation Function
-  const exportSimulation = useCallback((simulationId) => {
-    const simulation = savedSimulations.find(sim => sim.id === simulationId);
-    if (!simulation) return null;
-
-    const dataStr = JSON.stringify(simulation, null, 2);
-    const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
-    const exportFileName = `shm_simulation_${simulation.title.replace(/\s+/g, '_')}_${simulationId}.json`;
-
-    return { dataUri, exportFileName };
-  }, [savedSimulations]);
-
-  // Import Simulation Function
-  const importSimulation = useCallback((simulationData) => {
-    try {
-      const simulation = {
-        ...simulationData,
-        id: Date.now().toString(), // Generate new ID
-        importedAt: new Date().toISOString(),
-        // Ensure all required fields exist
-        type: simulationData.type || 'spring',
-        parameters: simulationData.parameters || {},
-        title: simulationData.title || 'Imported Simulation',
-        description: simulationData.description || '',
-        createdAt: simulationData.createdAt || new Date().toISOString(),
-      };
-
-      setSavedSimulations(prev => [simulation, ...prev]);
-      return simulation.id;
-    } catch (error) {
-      console.error('Error importing simulation:', error);
-      return null;
+  // Get user's simulations
+  const getUserSimulations = useCallback(() => {
+    if (!user) {
+      return localSavedSimulations.filter(sim => !sim.userId || sim.userId === 'anonymous');
     }
-  }, []);
+    return [...authUserSimulations, ...localSavedSimulations.filter(sim => sim.userId === user.id)];
+  }, [user, authUserSimulations, localSavedSimulations]);
 
-  // Get all saved simulations
+  // Get all saved simulations (for backward compatibility) - FIXED: use memoized savedSimulations
   const getSavedSimulations = useCallback(() => {
-    return [...savedSimulations];
-  }, [savedSimulations]);
-
-  // Clear all simulations
-  const clearAllSimulations = useCallback(() => {
-    setSavedSimulations([]);
-  }, []);
-
-  // Get recent simulations (last 10)
-  const getRecentSimulations = useCallback(() => {
-    return savedSimulations.slice(0, 10);
-  }, [savedSimulations]);
-
-  // Get simulation by ID
-  const getSimulationById = useCallback((simulationId) => {
-    return savedSimulations.find(sim => sim.id === simulationId);
-  }, [savedSimulations]);
-
-  // Duplicate a simulation
-  const duplicateSimulation = useCallback((simulationId) => {
-    const simulation = savedSimulations.find(sim => sim.id === simulationId);
-    if (!simulation) return null;
-
-    const duplicatedSimulation = {
-      ...simulation,
-      id: Date.now().toString(),
-      title: `${simulation.title} (Copy)`,
-      createdAt: new Date().toISOString(),
-      isOriginal: false,
-    };
-
-    setSavedSimulations(prev => [duplicatedSimulation, ...prev]);
-    return duplicatedSimulation.id;
+    return savedSimulations;
   }, [savedSimulations]);
 
   const value = {
@@ -281,19 +233,13 @@ export const SimulationProvider = ({ children }) => {
     activeGraph,
     setActiveGraph,
     
-    // New save/load functions
+    // Save/load functions
     savedSimulations,
     saveSimulation,
     loadSimulation,
     deleteSimulation,
-    updateSimulation,
-    exportSimulation,
-    importSimulation,
+    getUserSimulations,
     getSavedSimulations,
-    clearAllSimulations,
-    getRecentSimulations,
-    getSimulationById,
-    duplicateSimulation,
   };
 
   return (
@@ -302,3 +248,5 @@ export const SimulationProvider = ({ children }) => {
     </SimulationContext.Provider>
   );
 };
+
+export default SimulationContext;
