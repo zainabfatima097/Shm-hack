@@ -121,12 +121,7 @@ const LandingPage = () => {
           </Link>
           
           <div className="flex items-center gap-4">
-            <Link to="/features" className="text-gray-700 hover:text-pink-600 transition-colors font-medium">
-              Features
-            </Link>
-            <Link to="/about" className="text-gray-700 hover:text-pink-600 transition-colors font-medium">
-              About
-            </Link>
+          
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -213,7 +208,7 @@ const LandingPage = () => {
                   ))}
                 </div>
                 <div>
-                  <p className="text-gray-700 font-medium">Trusted by 10,000+ students & educators</p>
+                  <p className="text-gray-700 font-medium">For students & educators</p>
                   <div className="flex items-center gap-1">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <Star key={star} className="w-4 h-4 fill-amber-400 text-amber-400" />
@@ -421,7 +416,7 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6 font-display">
-              Loved by <span className="bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">Students & Educators</span>
+              Conributors <span className="bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">Section</span>
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Join thousands of users who have transformed their physics learning experience.
