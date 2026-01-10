@@ -1,6 +1,6 @@
 # Simple Harmonic Lab 
 
-An interactive, web-based platform to learn **Simple Harmonic Motion (SHM)** through real-time simulations, graphs, and experiments—without the limitations of a physical lab.
+An interactive, web-based platform to learn **Simple Harmonic Motion (SHM)** through real-time simulations, graphs, and experiments, without the limitations of a physical lab.
 
 ---
 
