@@ -91,6 +91,8 @@ Turns SHM from abstract formulas into a **visual, interactive experience** that 
 
 ## Effectiveness Comparison
 
+![SHM Practical Lab vs Simulation Lab](assets/shm.jpeg)
+
 Simulation labs outperform traditional labs in:
 - Time required
 - Accuracy of readings
