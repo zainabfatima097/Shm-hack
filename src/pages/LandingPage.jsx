@@ -55,31 +55,31 @@ const LandingPage = () => {
 
   const testimonials = [
     {
-      name: "Dr. Sarah Chen",
-      role: "Physics Professor, MIT",
+      name: "Zainab Fatima",
+      role: "Web Developer",
       content: "This platform revolutionized how I teach harmonic motion. The simulations are incredibly accurate.",
       avatar: "👩‍🏫",
       rating: 5
     },
     {
-      name: "Alex Rodriguez",
-      role: "Engineering Student",
+      name: "Zara Adeen Khadeer",
+      role: "Web Designer",
       content: "Finally, a tool that makes physics intuitive! The interactive graphs helped me ace my exams.",
       avatar: "👨‍🎓",
       rating: 5
     },
     {
-      name: "Priya Sharma",
-      role: "High School Teacher",
-      content: "My students are engaged like never before. The gamified learning approach works wonders.",
+      name: "Next Who?",
+      role: "Next You.",
+      content: "Experience physics Live!",
       avatar: "👩‍🏫",
       rating: 5
     }
   ];
 
   const stats = [
-    { value: "10K+", label: "Active Users", icon: <Users className="w-6 h-6" /> },
-    { value: "50K+", label: "Simulations Created", icon: <Cpu className="w-6 h-6" /> },
+    { value: "10)%", label: "Fun", icon: <Users className="w-6 h-6" /> },
+    { value: "10+", label: "Simulations Created", icon: <Cpu className="w-6 h-6" /> },
     { value: "95%", label: "Accuracy Rate", icon: <TargetIcon className="w-6 h-6" /> },
     { value: "24/7", label: "Uptime", icon: <Clock className="w-6 h-6" /> }
   ];
