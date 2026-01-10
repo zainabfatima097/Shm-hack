@@ -78,7 +78,7 @@ const LandingPage = () => {
   ];
 
   const stats = [
-    { value: "10)%", label: "Fun", icon: <Users className="w-6 h-6" /> },
+    { value: "100%", label: "Fun", icon: <Users className="w-6 h-6" /> },
     { value: "10+", label: "Simulations Created", icon: <Cpu className="w-6 h-6" /> },
     { value: "95%", label: "Accuracy Rate", icon: <TargetIcon className="w-6 h-6" /> },
     { value: "24/7", label: "Uptime", icon: <Clock className="w-6 h-6" /> }
